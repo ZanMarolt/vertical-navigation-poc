@@ -15,26 +15,20 @@ export class AppComponent implements OnInit {
   title = 'vertical-navigation';
 
   // Menu
-  position = 0;
+  position = 1;
 
   // Handle scroll
-  scroll$ = fromEvent(window, 'scroll')
-  tmpScrolldebug$ = new BehaviorSubject(0);
+  scroll$ = fromEvent(window, 'scroll');
 
   ngOnInit() {
     this.cards = Array(this.cardCount).fill(1).map((_, index) => index + 1);
 
-    this.scroll$.pipe(debounceTime(100)).subscribe(() => {
+    this.scroll$.pipe(debounceTime(10)).subscribe(() => {
+      const findVisible = this.cardElements?.find((value) => {
 
-      this.tmpScrolldebug$.next(window.scrollY);
+        const elBounds: DOMRect = value.host.nativeElement.getBoundingClientRect();
 
-      const findVisible = this.cardElements?.find((value, index) => {
-
-        const elBounds = value.host.nativeElement.getBoundingClientRect();
-
-        return (
-          elBounds.top >= 0
-        );
+        return elBounds.top + elBounds.height > 0;
       });
 
       this.position = findVisible?.number ? findVisible.number : this.position;
@@ -42,14 +36,10 @@ export class AppComponent implements OnInit {
   }
 
   up(): void {
-    this.position -= 1;
-    // handle logic for up
-    this.cardElements?.get(this.position)?.scroll();
+    this.cardElements?.get(this.position - 2)?.scroll();
   }
 
   down(): void {
-    this.position += 1;
-    // handle logic for down
     this.cardElements?.get(this.position)?.scroll();
   }
 }
