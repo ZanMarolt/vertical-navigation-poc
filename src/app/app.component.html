@@ -2,15 +2,17 @@
   <!-- Vertical menu -->
   <div class="menu">
     <ul>
-      <li (click)="up()">Up</li>
+      <!-- <li (click)="up()">Up</li> -->
       <li>Position: {{ position }}</li>
-      <li (click)="down()">Down</li>
-      <li>{{ tmpScrolldebug$ | async }}</li>
+      <!-- <li (click)="down()">Down</li> -->
     </ul>
   </div>
   <!-- Loop through cards -->
 
-  <card *ngFor="let number of cards" [number]="number" #card>
-  </card>
+  <cdk-virtual-scroll-viewport #viewPort [itemSize]="500" class="example-viewport">
+    <card *cdkVirtualFor="let number of cards" [number]="number">
+    </card>
+  </cdk-virtual-scroll-viewport>
+  
 </div>
 

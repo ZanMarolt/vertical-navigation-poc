@@ -2,3 +2,8 @@
     position: fixed;
     top: 0;
 }
+
+.example-viewport {
+    height: 500px;
+    width: 100%;
+}

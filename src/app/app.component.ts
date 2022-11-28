@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { BehaviorSubject, debounceTime, fromEvent } from 'rxjs';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { BehaviorSubject, debounceTime, fromEvent, tap } from 'rxjs';
 import { CardComponent } from './components/card.component';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-root',
@@ -8,8 +9,8 @@ import { CardComponent } from './components/card.component';
   styleUrls: ['./app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit {
-  @ViewChildren('card') cardElements: QueryList<CardComponent> | undefined;
+export class AppComponent implements OnInit, AfterViewInit {
+  @ViewChild(CdkVirtualScrollViewport) viewPort!: CdkVirtualScrollViewport;
   cardCount = 25;
   cards: number[] = [];
   title = 'vertical-navigation';
@@ -17,39 +18,27 @@ export class AppComponent implements OnInit {
   // Menu
   position = 0;
 
-  // Handle scroll
-  scroll$ = fromEvent(window, 'scroll')
-  tmpScrolldebug$ = new BehaviorSubject(0);
-
   ngOnInit() {
     this.cards = Array(this.cardCount).fill(1).map((_, index) => index + 1);
-
-    this.scroll$.pipe(debounceTime(100)).subscribe(() => {
-
-      this.tmpScrolldebug$.next(window.scrollY);
-
-      const findVisible = this.cardElements?.find((value, index) => {
-
-        const elBounds = value.host.nativeElement.getBoundingClientRect();
-
-        return (
-          elBounds.top >= 0
-        );
-      });
-
-      this.position = findVisible?.number ? findVisible.number : this.position;
-    })
   }
 
-  up(): void {
-    this.position -= 1;
-    // handle logic for up
-    this.cardElements?.get(this.position)?.scroll();
+  ngAfterViewInit() {
+    this.viewPort.scrolledIndexChange.pipe(
+      tap((currIndex: number) => {
+        console.log('scrolledIndexChange:', currIndex + 1);
+      })
+    ).subscribe();
   }
 
-  down(): void {
-    this.position += 1;
-    // handle logic for down
-    this.cardElements?.get(this.position)?.scroll();
-  }
+  // up(): void {
+  //   this.position -= 1;
+  //   // handle logic for up
+  //   this.cardElements?.get(this.position)?.scroll();
+  // }
+
+  // down(): void {
+  //   this.position += 1;
+  //   // handle logic for down
+  //   this.cardElements?.get(this.position)?.scroll();
+  // }
 }
