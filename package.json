@@ -1,0 +1,24 @@
+{
+  "name": "vertical-navigation-poc",
+  "version": "0.0.1",
+  "description": "Proof of concept for vertical navigation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZanMarolt/vertical-navigation-poc.git"
+  },
+  "keywords": [
+    "angular",
+    "vertical",
+    "navigation"
+  ],
+  "author": "Zan Marolt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ZanMarolt/vertical-navigation-poc/issues"
+  },
+  "homepage": "https://github.com/ZanMarolt/vertical-navigation-poc#readme"
+}
