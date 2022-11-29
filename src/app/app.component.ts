@@ -1,6 +1,5 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { BehaviorSubject, debounceTime, fromEvent, tap } from 'rxjs';
-import { CardComponent } from './components/card.component';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { map, Observable, BehaviorSubject, tap } from 'rxjs';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 @Component({
@@ -16,29 +15,28 @@ export class AppComponent implements OnInit, AfterViewInit {
   title = 'vertical-navigation';
 
   // Menu
-  position = 0;
+  position$!: Observable<number>; 
+  positionSub$: BehaviorSubject<number> = new BehaviorSubject(0);
 
   ngOnInit() {
     this.cards = Array(this.cardCount).fill(1).map((_, index) => index + 1);
   }
 
   ngAfterViewInit() {
-    this.viewPort.scrolledIndexChange.pipe(
-      tap((currIndex: number) => {
-        console.log('scrolledIndexChange:', currIndex + 1);
-      })
-    ).subscribe();
+    this.position$ = this.viewPort.scrolledIndexChange.pipe(
+      map((currIndex: number) => currIndex + 1),
+      tap((num: number) => { this.positionSub$.next(num) }),
+    );
   }
 
-  // up(): void {
-  //   this.position -= 1;
-  //   // handle logic for up
-  //   this.cardElements?.get(this.position)?.scroll();
-  // }
+  up(): void {
+    const position: number = this.positionSub$.getValue();
+    this.viewPort.scrollToIndex(position - 2, 'smooth');
+  }
 
-  // down(): void {
-  //   this.position += 1;
-  //   // handle logic for down
-  //   this.cardElements?.get(this.position)?.scroll();
-  // }
+  down(): void {
+    const position: number = this.positionSub$.getValue();
+    console.log(position);
+    this.viewPort.scrollToIndex(position, 'smooth');
+  }
 }
