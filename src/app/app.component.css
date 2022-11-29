@@ -2,3 +2,7 @@
     position: fixed;
     top: 0;
 }
+
+.menu ul li {
+    cursor: pointer;
+}

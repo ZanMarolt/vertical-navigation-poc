@@ -14,12 +14,9 @@ export class CardComponent {
   ) {}
 
   scroll(): void {
-    console.log('Scrolling to', this.number);
-    console.log('pos', this.host.nativeElement.getBoundingClientRect());
-  
     window.scrollTo({
       top: window.scrollY + this.host.nativeElement.getBoundingClientRect().y + 1,
       behavior: 'smooth',
-    } as ScrollToOptions);
+    });
   }
 }

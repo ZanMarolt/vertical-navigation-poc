@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { BehaviorSubject, debounceTime, fromEvent } from 'rxjs';
 import { CardComponent } from './components/card.component';
 
@@ -20,6 +20,8 @@ export class AppComponent implements OnInit {
   // Handle scroll
   scroll$ = fromEvent(window, 'scroll');
 
+  constructor(readonly cdr: ChangeDetectorRef) {}
+
   ngOnInit() {
     this.cards = Array(this.cardCount).fill(1).map((_, index) => index + 1);
 
@@ -31,7 +33,10 @@ export class AppComponent implements OnInit {
         return elBounds.top + elBounds.height > 0;
       });
 
+      if(!findVisible) return;
+
       this.position = findVisible?.number ? findVisible.number : this.position;
+      this.cdr.markForCheck();
     })
   }
 
