@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
 
         const elBounds: DOMRect = value.host.nativeElement.getBoundingClientRect();
 
-        return elBounds.top + elBounds.height > 0;
+        return elBounds.top + elBounds.height * 0.75 > 0;
       });
 
       if(!findVisible) return;
