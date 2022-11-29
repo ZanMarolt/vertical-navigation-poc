@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { BehaviorSubject, debounceTime, fromEvent } from 'rxjs';
+import { debounceTime, fromEvent } from 'rxjs';
 import { CardComponent } from './components/card.component';
 
 @Component({
@@ -27,7 +27,6 @@ export class AppComponent implements OnInit {
 
     this.scroll$.pipe(debounceTime(10)).subscribe(() => {
       const findVisible = this.cardElements?.find((value) => {
-
         const elBounds: DOMRect = value.host.nativeElement.getBoundingClientRect();
 
         return elBounds.top + elBounds.height * 0.75 > 0;
@@ -35,7 +34,7 @@ export class AppComponent implements OnInit {
 
       if(!findVisible) return;
 
-      this.position = findVisible?.number ? findVisible.number : this.position;
+      this.position = findVisible.number ? findVisible.number : this.position;
       this.cdr.markForCheck();
     })
   }
