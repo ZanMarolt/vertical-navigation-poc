@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { debounceTime, fromEvent } from 'rxjs';
 import { CardComponent } from './components/card.component';
 
@@ -9,21 +9,20 @@ import { CardComponent } from './components/card.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
-  @ViewChildren('card') cardElements: QueryList<CardComponent> | undefined;
-  cardCount = 25;
+  readonly cdr = inject(ChangeDetectorRef);
+  
+  @ViewChildren('card') cardElements!: QueryList<CardComponent>;
+  private _cardCount = 25;
   cards: number[] = [];
-  title = 'vertical-navigation';
-
+  
   // Menu
-  position = 1;
-
+  position = 0;
+  
   // Handle scroll
   scroll$ = fromEvent(window, 'scroll');
-
-  constructor(readonly cdr: ChangeDetectorRef) {}
-
+  
   ngOnInit() {
-    this.cards = Array(this.cardCount).fill(1).map((_, index) => index + 1);
+    this.cards = Array(this._cardCount).fill(1).map((_, index) => index + 1);
 
     this.scroll$.pipe(debounceTime(10)).subscribe(() => {
       const findVisible = this.cardElements?.find((value) => {
@@ -34,16 +33,16 @@ export class AppComponent implements OnInit {
 
       if(!findVisible) return;
 
-      this.position = findVisible.number ? findVisible.number : this.position;
+      this.position = findVisible.number ? findVisible.number - 1 : this.position;
       this.cdr.markForCheck();
     })
   }
 
   up(): void {
-    this.cardElements?.get(this.position - 2)?.scroll();
+    this.cardElements.get(this.position - 1)?.scroll();
   }
 
   down(): void {
-    this.cardElements?.get(this.position)?.scroll();
+    this.cardElements.get(this.position + 1)?.scroll();
   }
 }
