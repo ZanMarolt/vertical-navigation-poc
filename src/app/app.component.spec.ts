@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { BrowserModule } from '@angular/platform-browser'
+import { MockComponent } from "ng-mocks";
 
 import { AppComponent } from "./app.component";
+import { CardComponent } from "./components/card.component";
+import { SimpleService } from './simple.service';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -8,9 +12,13 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      // provide the component-under-test and dependent service
-      providers: [
+      imports: [BrowserModule],
+      declarations: [
         AppComponent,
+        MockComponent(CardComponent),
+      ],
+      providers: [
+        { provide: SimpleService, useValue: { url: 'http://test-only.zan.sh' } }
       ]
     });
 
@@ -20,5 +28,11 @@ describe('AppComponent', () => {
 
   it('should build', () => {
     expect(component.cdr).toBeDefined();
+  });
+
+  it('should render', () => {
+    fixture.detectChanges();
+
+    expect(component).toBeDefined();
   });
 })

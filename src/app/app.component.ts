@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { debounceTime, fromEvent } from 'rxjs';
 import { CardComponent } from './components/card.component';
+import { SimpleService } from './simple.service';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,7 @@ import { CardComponent } from './components/card.component';
 })
 export class AppComponent implements OnInit {
   readonly cdr = inject(ChangeDetectorRef);
+  readonly ss = inject(SimpleService);
   
   @ViewChildren('card') cardElements!: QueryList<CardComponent>;
   private _cardCount = 25;
@@ -23,6 +25,8 @@ export class AppComponent implements OnInit {
   
   ngOnInit() {
     this.cards = Array(this._cardCount).fill(1).map((_, index) => index + 1);
+
+    console.log(this.ss.url);
 
     this.scroll$.pipe(debounceTime(10)).subscribe(() => {
       const findVisible = this.cardElements?.find((value) => {
